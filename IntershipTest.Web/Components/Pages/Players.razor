@@ -1,0 +1,100 @@
+﻿@page "/players"
+@rendermode InteractiveServer
+@inject IJSRuntime JsRuntime;
+@inject IPlayerService PlayerService;
+@inject ITeamService TeamService;
+<h3>Spelers</h3>
+<button @onclick="() => OpenAddModal()">speler toevoegen</button>
+<table>
+    <thead>
+        <tr>
+            <th>Voornaam</th>
+            <th>Achternaam</th>
+            <th>Geboortedatum</th>
+            <th>Team</th>
+            <th>Acties</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var player in PlayersList)
+        {
+            <tr>
+                <td>@player.FirstName</td>
+                <td>@player.LastName</td>
+                <td>@player.DateOfBirth.ToString("dd-MM-yyyy")</td>
+                <td>@player.Team.Name</td>
+                <td>
+                    <button @onclick="() => OpenEditModal(player)">Bewerken</button>
+                    <button @onclick="()=> DeletePlayer(player.Id)">Verwijderen</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (IsEditModalOpen)
+{
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 20px; border: 1px solid black; width: 300px; text-align: center;">
+            <h2>Bewerk Speler</h2>
+            <form @onsubmit="SaveEditPlayer">
+                <input type="hidden" @bind="EditingPlayer.Id" />
+
+                <label>Voornaam:</label>
+                <input type="text" @bind="EditingPlayer.FirstName" required /><br>
+
+                <label>Achternaam:</label>
+                <input type="text" @bind="EditingPlayer.LastName" required /><br>
+
+                <label>Geboortedatum:</label>
+                <input type="date" @bind="EditingPlayer.DateOfBirth" required /><br>
+
+                <label>Team:</label>
+                <select @bind="EditingPlayer.TeamId">
+                    <option value="">-- Kies een team --</option>
+                    @foreach (var team in Teams)
+                    {
+                        <option value="@team.Id">@team.Name</option>
+                    }
+                </select><br>
+
+                <div>
+                    <button type="submit">Opslaan</button>
+                    <button type="button" @onclick="CloseEditModal">Annuleren</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+@if (IsAddModalOpen)
+{
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 20px; border: 1px solid black; width: 300px; text-align: center;">
+            <h2>Voeg speler toe</h2>
+            <form @onsubmit="SaveAddPlayer">
+
+                <label>Voornaam:</label>
+                <input type="text" @bind="AddingPlayer.FirstName" required /><br>
+
+                <label>Achternaam:</label>
+                <input type="text" @bind="AddingPlayer.LastName" required /><br>
+
+                <label>Geboortedatum:</label>
+                <input type="date" @bind="AddingPlayer.DateOfBirth" required /><br>
+
+                <label>Team:</label>
+                <select @bind="AddingPlayer.TeamId">
+                    <option value="">-- Kies een team --</option>
+                    @foreach (var team in Teams)
+                    {
+                        <option value="@team.Id">@team.Name</option>
+                    }
+                </select><br>
+
+                <div>
+                    <button type="submit">Opslaan</button>
+                    <button type="button" @onclick="CloseAddModal">Annuleren</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
