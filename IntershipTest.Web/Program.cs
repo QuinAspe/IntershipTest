@@ -1,11 +1,19 @@
+using IntershipTest.Core.Interfaces.Repositories;
+using IntershipTest.Infrastructure.Data;
+using IntershipTest.Infrastructure.Repositories;
 using IntershipTest.Web.Components;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb"));
+});
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
