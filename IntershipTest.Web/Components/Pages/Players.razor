@@ -4,10 +4,12 @@
 @inject IPlayerService PlayerService;
 @inject NavigationManager NavigationManager;
 @inject ITeamService TeamService;
-@if (ShowError)
+@inject ErrorHandelingService ErrorHandlingService;
+@inject DataService DataService;
+@if (ErrorHandlingService.ShowError)
 {
     <div class="error-message">
-        @ErrorMessage
+        @ErrorHandlingService.ErrorMessage
     </div>
 }
 <h3 class="page-header">Spelers</h3>

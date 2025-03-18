@@ -14,44 +14,16 @@ namespace IntershipTest.Web.Components.Pages
         private Player EditingPlayer = new();
         private Player AddingPlayer = new();
         private bool IsAddModalOpen = false;
-        private bool ShowError = false;
-        private string ErrorMessage = string.Empty;
 
         protected async override Task OnInitializedAsync()
         {
-            GetPlayers();
-            GetTeams();
+            PlayersList = await DataService.GetPlayersAsync();
+            Teams = await DataService.GetTeamsAsync();
             await base.OnInitializedAsync();
         }
         private void GoToPlayerInfo(int id)
         {
             NavigationManager.NavigateTo($"/playerinfo/{id}");
-        }
-        private async void GetTeams()
-        {
-            var getTeams = await TeamService.GetAllAsync();
-            if (!getTeams.IsSuccess)
-            {
-
-            }
-            else
-            {
-                Teams = getTeams.Value.ToList();
-                StateHasChanged();
-            }
-        }
-        private async void GetPlayers()
-        {
-            var getPlayers = await PlayerService.GetAllAsync();
-            if (!getPlayers.IsSuccess)
-            {
-
-            }
-            else
-            {
-                PlayersList = getPlayers.Value.ToList();
-                StateHasChanged();
-            }
         }
         private void OpenAddModal()
         {
@@ -63,26 +35,18 @@ namespace IntershipTest.Web.Components.Pages
             IsAddModalOpen = false;
             StateHasChanged();
         }
-        private async void SaveAddPlayer()
+        private async Task SaveAddPlayer()
         {
             var result = await PlayerService.AddAsync(AddingPlayer.MapToPlayerAddRequestModel());
             if (result.IsSuccess)
             {
-                GetPlayers();
+                PlayersList = await DataService.GetPlayersAsync();
             }
             else
             {
-                HandleError(result);
+                ErrorHandlingService.HandleError(result);
             }
             CloseAddModal();
-        }
-        private void HandleError<T>(ResultModel<T> resultModel)
-        {
-            if (resultModel.Errors.Any())
-            {
-                ShowError = true;
-                ErrorMessage = resultModel.Errors.FirstOrDefault();
-            }
         }
     }
 }

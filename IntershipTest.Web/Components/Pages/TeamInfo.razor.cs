@@ -15,28 +15,18 @@ namespace IntershipTest.Web.Components.Pages
         private Team SelectedTeam;
         private Team EditingTeam = new();
         private bool IsEditModalOpen = false;
-        private bool ShowError = false;
-        private string ErrorMessage = string.Empty;
 
 
         protected override async Task OnInitializedAsync()
         {
-            var result = await TeamService.GetByIdAsync(TeamId);
-            if (result.IsSuccess)
-            {
-                SelectedTeam = result.Value;
-            }
-            else
-            {
-                HandleError(result);
-            }
+            SelectedTeam = await DataService.GetTeamAsync(TeamId);
             await base.OnInitializedAsync();
         }
         private void GoToPlayerInfo(int id)
         {
             NavigationManager.NavigateTo($"/playerinfo/{id}");
         }
-        private async void DeleteTeam(int id)
+        private async Task DeleteTeam(int id)
         {
             if (await JsRuntime.InvokeAsync<bool>("confirm", "Weet je zeker dat je dit team wilt verwijderen \n Alle spelers in het team worden ook verwijderd"))
             {
@@ -47,11 +37,11 @@ namespace IntershipTest.Web.Components.Pages
                 }
                 else
                 {
-                    HandleError(result);
+                    ErrorHandlingService.HandleError(result);
                 }
             }
         }
-        private async void SaveEditTeam()
+        private async Task SaveEditTeam()
         {
             var result = await TeamService.UpdateAsync(EditingTeam.MapToPlayerUpdateRequestModel());
             if (result.IsSuccess)
@@ -61,7 +51,7 @@ namespace IntershipTest.Web.Components.Pages
             }
             else
             {
-                HandleError(result);
+                ErrorHandlingService.HandleError(result);
             }
             CloseEditModal();
         }
@@ -79,14 +69,6 @@ namespace IntershipTest.Web.Components.Pages
         {
             IsEditModalOpen = false;
             StateHasChanged();
-        }
-        private void HandleError<T>(ResultModel<T> resultModel)
-        {
-            if (resultModel.Errors.Any())
-            {
-                ShowError = true;
-                ErrorMessage = resultModel.Errors.FirstOrDefault();
-            }
         }
     }
 }

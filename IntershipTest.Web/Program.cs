@@ -4,6 +4,7 @@ using IntershipTest.Core.Services;
 using IntershipTest.Infrastructure.Data;
 using IntershipTest.Infrastructure.Repositories;
 using IntershipTest.Web.Components;
+using IntershipTest.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 
@@ -20,6 +21,8 @@ builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<ErrorHandelingService>();
+builder.Services.AddScoped<DataService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,15 +1,17 @@
 ﻿@page "/PlayerInfo/{playerId:int}"
 @rendermode InteractiveServer
-@inject IJSRuntime JsRuntime
-@inject IPlayerService PlayerService
-@inject ITeamService TeamService
-@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime;
+@inject IPlayerService PlayerService;
+@inject ITeamService TeamService;
+@inject NavigationManager NavigationManager;
+@inject ErrorHandelingService ErrorHandlingService;
+@inject DataService DataService;
 @if (SelectedPlayer != null)
 {
-    @if (ShowError)
+    @if (ErrorHandlingService.ShowError)
     {
         <div class="error-message">
-            @ErrorMessage
+            @ErrorHandlingService.ErrorMessage
         </div>
     }
     <h3 class="page-header">@SelectedPlayer.FirstName @SelectedPlayer.LastName</h3>

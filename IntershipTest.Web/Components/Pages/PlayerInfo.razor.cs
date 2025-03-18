@@ -17,29 +17,11 @@ namespace IntershipTest.Web.Components.Pages
         private Player EditingPlayer = new();
         private Player AddingPlayer = new();
         private bool IsEditModalOpen = false;
-        private bool ShowError = false;
-        private string ErrorMessage = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
-            var result = await PlayerService.GetByIdAsync(PlayerId);
-            if (result.IsSuccess)
-            {
-                SelectedPlayer = result.Value;
-            }
-            else
-            {
-                HandleError(result);
-            }
-            var result2 = await TeamService.GetAllAsync();
-            if (result2.IsSuccess)
-            {
-                Teams = result2.Value.ToList();
-            }
-            else
-            {
-                HandleError(result2);
-            }
+            SelectedPlayer = await DataService.GetPlayerAsync(PlayerId);
+            Teams = await DataService.GetTeamsAsync();
             await base.OnInitializedAsync();
         }
         private void GoToTeamInfo(int id)
@@ -61,22 +43,22 @@ namespace IntershipTest.Web.Components.Pages
         private void CloseEditModal()
         {
             IsEditModalOpen = false;
-            StateHasChanged();
         }
-        private async void SaveEditPlayer()
+        private async Task SaveEditPlayer()
         {
             var result = await PlayerService.UpdateAsync(EditingPlayer.MapToPlayerUpdateRequestModel());
             if (result.IsSuccess)
             {
-                SelectedPlayer = EditingPlayer;
+                SelectedPlayer = null;
+                NavigationManager.NavigateTo($"/PlayerInfo/{EditingPlayer.Id}",true);
             }
             else
             {
-                HandleError(result);
+                ErrorHandlingService.HandleError(result);
             }
             CloseEditModal();
         }
-        private async void DeletePlayer(int id)
+        private async Task DeletePlayer(int id)
         {
             if (await JsRuntime.InvokeAsync<bool>("confirm", "Weet je zeker dat je deze speler wilt verwijderen?"))
             {
@@ -87,16 +69,8 @@ namespace IntershipTest.Web.Components.Pages
                 }
                 else
                 {
-                    HandleError(result);
+                    ErrorHandlingService.HandleError(result);
                 }
-            }
-        }
-        private void HandleError<T>(ResultModel<T> resultModel)
-        {
-            if (resultModel.Errors.Any())
-            {
-                ShowError = true;
-                ErrorMessage = resultModel.Errors.FirstOrDefault();
             }
         }
     }

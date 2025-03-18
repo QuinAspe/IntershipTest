@@ -3,10 +3,12 @@
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavigationManager;
 @inject ITeamService TeamService;
-@if (ShowError)
+@inject ErrorHandelingService ErrorHandlingService;
+@inject DataService DataService;
+@if (ErrorHandlingService.ShowError)
 {
     <div class="error-message">
-        @ErrorMessage
+        @ErrorHandlingService.ErrorMessage
     </div>
 }
 <h3 class="page-header">Teams</h3>

@@ -1,14 +1,16 @@
 ﻿@page "/TeamInfo/{teamId:int}"
 @rendermode InteractiveServer
-@inject IJSRuntime JsRuntime
-@inject ITeamService TeamService
-@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime;
+@inject ITeamService TeamService;
+@inject NavigationManager NavigationManager;
+@inject ErrorHandelingService ErrorHandlingService;
+@inject DataService DataService;
 @if (SelectedTeam != null)
 {
-    @if (ShowError)
+    @if (ErrorHandlingService.ShowError)
     {
         <div class="error-message">
-            @ErrorMessage
+            @ErrorHandlingService.ErrorMessage
         </div>
     }
     <h3 class="page-header">@SelectedTeam.Name</h3>
