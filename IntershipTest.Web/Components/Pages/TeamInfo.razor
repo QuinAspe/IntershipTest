@@ -5,6 +5,12 @@
 @inject NavigationManager NavigationManager
 @if (SelectedTeam != null)
 {
+    @if (ShowError)
+    {
+        <div class="error-message">
+            @ErrorMessage
+        </div>
+    }
     <h3 class="page-header">@SelectedTeam.Name</h3>
     <button class="btn btn-warning" @onclick="() => OpenEditModal(SelectedTeam)">Bewerken</button>
     <button class="btn btn-danger" @onclick="() => DeleteTeam(SelectedTeam.Id)">Verwijderen</button>
@@ -19,16 +25,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var player in SelectedTeam.Players)
+            @if (SelectedTeam.Players.Count == 0)
             {
                 <tr>
-                    <td>@player.FirstName</td>
-                    <td>@player.LastName</td>
-                    <td>@player.DateOfBirth.ToString("dd-MM-yyyy")</td>
-                    <td>
-                        <button class="btn btn-info" @onclick="() => GoToPlayerInfo(player.Id)">Info</button>
-                    </td>
+                    <td colspan="4" class="text-center">Geen spelers gevonden</td>
                 </tr>
+            }
+            else
+            {
+                @foreach (var player in SelectedTeam.Players)
+                {
+                    <tr>
+                        <td>@player.FirstName</td>
+                        <td>@player.LastName</td>
+                        <td>@player.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <button class="btn btn-info" @onclick="() => GoToPlayerInfo(player.Id)">Info</button>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -42,7 +57,7 @@
                 <input type="hidden" @bind="EditingTeam.Id" />
 
                 <label>Voornaam:</label>
-                <input type="text" @bind="EditingTeam.Name" required class="form-control"/><br>
+                <input type="text" @bind="EditingTeam.Name" required class="form-control" /><br>
 
                 <div class="button-group">
                     <button type="submit" class="btn btn-success">Opslaan</button>

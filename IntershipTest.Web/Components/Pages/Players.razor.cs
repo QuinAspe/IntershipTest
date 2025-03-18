@@ -1,5 +1,6 @@
 ﻿using IntershipTest.Core.Entities;
 using IntershipTest.Core.Interfaces.Services;
+using IntershipTest.Core.Services.Models;
 using IntershipTest.Web.Mapping;
 using Microsoft.JSInterop;
 using static System.Net.WebRequestMethods;
@@ -13,6 +14,8 @@ namespace IntershipTest.Web.Components.Pages
         private Player EditingPlayer = new();
         private Player AddingPlayer = new();
         private bool IsAddModalOpen = false;
+        private bool ShowError = false;
+        private string ErrorMessage = string.Empty;
 
         protected async override Task OnInitializedAsync()
         {
@@ -69,9 +72,17 @@ namespace IntershipTest.Web.Components.Pages
             }
             else
             {
-                //errors
+                HandleError(result);
             }
             CloseAddModal();
+        }
+        private void HandleError<T>(ResultModel<T> resultModel)
+        {
+            if (resultModel.Errors.Any())
+            {
+                ShowError = true;
+                ErrorMessage = resultModel.Errors.FirstOrDefault();
+            }
         }
     }
 }

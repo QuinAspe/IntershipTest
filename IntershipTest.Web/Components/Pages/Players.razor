@@ -4,7 +4,12 @@
 @inject IPlayerService PlayerService;
 @inject NavigationManager NavigationManager;
 @inject ITeamService TeamService;
-
+@if (ShowError)
+{
+    <div class="error-message">
+        @ErrorMessage
+    </div>
+}
 <h3 class="page-header">Spelers</h3>
 <button class="btn btn-primary" @onclick="() => OpenAddModal()">speler toevoegen</button>
 <table class="table">
@@ -18,17 +23,26 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var player in PlayersList)
+        @if (PlayersList.Count == 0)
         {
             <tr>
-                <td>@player.FirstName</td>
-                <td>@player.LastName</td>
-                <td>@player.DateOfBirth.ToString("dd-MM-yyyy")</td>
-                <td>@player.Team.Name</td>
-                <td>
-                    <button class="btn btn-info" @onclick="() => GoToPlayerInfo(player.Id)">Info</button>
-                </td>
+                <td colspan="5" class="text-center">Geen spelers gevonden</td>
             </tr>
+        }
+        else
+        {
+            @foreach (var player in PlayersList)
+            {
+                <tr>
+                    <td>@player.FirstName</td>
+                    <td>@player.LastName</td>
+                    <td>@player.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                    <td>@player.Team.Name</td>
+                    <td>
+                        <button class="btn btn-info" @onclick="() => GoToPlayerInfo(player.Id)">Info</button>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
@@ -40,13 +54,13 @@
             <form @onsubmit="SaveAddPlayer">
 
                 <label>Voornaam:</label>
-                <input type="text" @bind="AddingPlayer.FirstName" required class="form-control"/><br>
+                <input type="text" @bind="AddingPlayer.FirstName" required class="form-control" /><br>
 
                 <label>Achternaam:</label>
-                <input type="text" @bind="AddingPlayer.LastName" required class="form-control"/><br>
+                <input type="text" @bind="AddingPlayer.LastName" required class="form-control" /><br>
 
                 <label>Geboortedatum:</label>
-                <input type="date" @bind="AddingPlayer.DateOfBirth" required class="form-control"/><br>
+                <input type="date" @bind="AddingPlayer.DateOfBirth" required class="form-control" /><br>
 
                 <label>Team:</label>
                 <select @bind="AddingPlayer.TeamId" class="form-control">

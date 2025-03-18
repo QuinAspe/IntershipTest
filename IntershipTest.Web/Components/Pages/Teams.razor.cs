@@ -1,5 +1,6 @@
 ﻿using IntershipTest.Core.Entities;
 using IntershipTest.Core.Services;
+using IntershipTest.Core.Services.Models;
 using IntershipTest.Web.Mapping;
 using Microsoft.JSInterop;
 
@@ -11,6 +12,8 @@ namespace IntershipTest.Web.Components.Pages
         private Team EditingTeam = new();
         private Team AddingTeam = new();
         private bool IsAddModalOpen = false;
+        private bool ShowError = false;
+        private string ErrorMessage = string.Empty;
         protected async override Task OnInitializedAsync()
         {
             GetTeams();
@@ -21,7 +24,7 @@ namespace IntershipTest.Web.Components.Pages
             var getTeams = await TeamService.GetAllAsync();
             if (!getTeams.IsSuccess)
             {
-
+                HandleError(getTeams);
             }
             else
             {
@@ -48,13 +51,21 @@ namespace IntershipTest.Web.Components.Pages
             }
             else
             {
-                //errors
+                HandleError(result);
             }
             CloseAddModal();
         }
         private void GoToTeamInfo(int id)
         {
             NavigationManager.NavigateTo($"/teaminfo/{id}");
+        }
+        private void HandleError<T>(ResultModel<T> resultModel)
+        {
+            if (resultModel.Errors.Any())
+            {
+                ShowError = true;
+                ErrorMessage = resultModel.Errors.FirstOrDefault();
+            }
         }
     }
 }

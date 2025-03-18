@@ -3,6 +3,12 @@
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavigationManager;
 @inject ITeamService TeamService;
+@if (ShowError)
+{
+    <div class="error-message">
+        @ErrorMessage
+    </div>
+}
 <h3 class="page-header">Teams</h3>
 <button class="btn btn-success" @onclick="() => OpenAddModal()">Team toevoegen</button>
 <table class="table">
@@ -13,14 +19,23 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var team in TeamsList)
+        @if (TeamsList.Count == 0)
         {
             <tr>
-                <td>@team.Name</td>
-                <td>
-                    <button class="btn btn-info" @onclick="() => GoToTeamInfo(team.Id)">Info</button>
-                </td>
+                <td colspan="2" class="text-center">Geen teams gevonden</td>
             </tr>
+        }
+        else
+        {
+            @foreach (var team in TeamsList)
+            {
+                <tr>
+                    <td>@team.Name</td>
+                    <td>
+                        <button class="btn btn-info" @onclick="() => GoToTeamInfo(team.Id)">Info</button>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
@@ -32,7 +47,7 @@
             <form @onsubmit="SaveAddTeam">
 
                 <label>Voornaam:</label>
-                <input type="text" @bind="AddingTeam.Name" required class="form-control"/><br>
+                <input type="text" @bind="AddingTeam.Name" required class="form-control" /><br>
 
                 <div class="button-group">
                     <button type="submit" class="btn btn-success">Opslaan</button>

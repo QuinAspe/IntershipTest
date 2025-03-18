@@ -6,6 +6,12 @@
 @inject NavigationManager NavigationManager
 @if (SelectedPlayer != null)
 {
+    @if (ShowError)
+    {
+        <div class="error-message">
+            @ErrorMessage
+        </div>
+    }
     <h3 class="page-header">@SelectedPlayer.FirstName @SelectedPlayer.LastName</h3>
     <button class="btn btn-warning" @onclick="() => OpenEditModal(SelectedPlayer)">Bewerken</button>
     <button class="btn btn-danger" @onclick="() => DeletePlayer(SelectedPlayer.Id)">Verwijderen</button>
@@ -18,7 +24,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>@SelectedPlayer.DateOfBirth</td>
+                <td>@SelectedPlayer.DateOfBirth.ToString("dd/MM/yyyy")</td>
                 <td>@SelectedPlayer.Team.Name <button class="btn btn-info" @onclick="() => GoToTeamInfo(SelectedPlayer.TeamId)">Info</button></td>
             </tr>
         </tbody>

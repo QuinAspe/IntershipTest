@@ -7,7 +7,7 @@
     font-size: 24px;
     margin-bottom: 10px;
 }
-/* Buttons */
+
 .btn {
     padding: 8px 12px;
     border: none;
@@ -45,7 +45,6 @@
     color: black;
 }
 
-/* Table */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -62,7 +61,6 @@
         text-align: left;
     }
 
-/* Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -103,4 +101,13 @@
 .subheading {
     color: #555;
     font-size: 18px;
+}
+.error-message {
+    padding: 10px;
+    border: 2px solid red;
+    color: red;
+    background-color: #f8d7da;
+    font-size: 16px;
+    border-radius: 5px;
+    width: fit-content;
 }

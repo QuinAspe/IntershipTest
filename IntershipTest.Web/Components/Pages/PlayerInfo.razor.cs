@@ -1,5 +1,6 @@
 ﻿using IntershipTest.Core.Entities;
 using IntershipTest.Core.Services;
+using IntershipTest.Core.Services.Models;
 using IntershipTest.Web.Mapping;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -16,6 +17,9 @@ namespace IntershipTest.Web.Components.Pages
         private Player EditingPlayer = new();
         private Player AddingPlayer = new();
         private bool IsEditModalOpen = false;
+        private bool ShowError = false;
+        private string ErrorMessage = string.Empty;
+
         protected override async Task OnInitializedAsync()
         {
             var result = await PlayerService.GetByIdAsync(PlayerId);
@@ -25,7 +29,7 @@ namespace IntershipTest.Web.Components.Pages
             }
             else
             {
-                //error
+                HandleError(result);
             }
             var result2 = await TeamService.GetAllAsync();
             if (result2.IsSuccess)
@@ -34,7 +38,7 @@ namespace IntershipTest.Web.Components.Pages
             }
             else
             {
-                //error
+                HandleError(result2);
             }
             await base.OnInitializedAsync();
         }
@@ -68,7 +72,7 @@ namespace IntershipTest.Web.Components.Pages
             }
             else
             {
-                //errors
+                HandleError(result);
             }
             CloseEditModal();
         }
@@ -83,8 +87,16 @@ namespace IntershipTest.Web.Components.Pages
                 }
                 else
                 {
-                    //errors
+                    HandleError(result);
                 }
+            }
+        }
+        private void HandleError<T>(ResultModel<T> resultModel)
+        {
+            if (resultModel.Errors.Any())
+            {
+                ShowError = true;
+                ErrorMessage = resultModel.Errors.FirstOrDefault();
             }
         }
     }
