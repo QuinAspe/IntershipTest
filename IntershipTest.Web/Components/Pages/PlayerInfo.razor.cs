@@ -73,6 +73,5 @@ namespace IntershipTest.Web.Components.Pages
                 }
             }
         }
-        //fufuzhufzh
     }
 }
