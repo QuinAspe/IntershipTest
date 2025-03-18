@@ -10,7 +10,6 @@ namespace IntershipTest.Web.Components.Pages
         private List<Team> TeamsList = new ();
         private Team EditingTeam = new();
         private Team AddingTeam = new();
-        private bool IsEditModalOpen = false;
         private bool IsAddModalOpen = false;
         protected async override Task OnInitializedAsync()
         {
@@ -30,20 +29,6 @@ namespace IntershipTest.Web.Components.Pages
                 StateHasChanged();
             }
         }
-        private void OpenEditModal(Team team)
-        {
-            EditingTeam = new Team
-            {
-                Id = team.Id,
-                Name = team.Name,
-            };
-            IsEditModalOpen = true;
-        }
-        private void CloseEditModal()
-        {
-            IsEditModalOpen = false;
-            StateHasChanged();
-        }
         private void OpenAddModal()
         {
             AddingTeam = new Team();
@@ -53,19 +38,6 @@ namespace IntershipTest.Web.Components.Pages
         {
             IsAddModalOpen = false;
             StateHasChanged();
-        }
-        private async void SaveEditTeam()
-        {
-            var result = await TeamService.UpdateAsync(EditingTeam.MapToPlayerUpdateRequestModel());
-            if (result.IsSuccess)
-            {
-                GetTeams();
-            }
-            else
-            {
-                //errors
-            }
-            CloseEditModal();
         }
         private async void SaveAddTeam()
         {
@@ -80,20 +52,9 @@ namespace IntershipTest.Web.Components.Pages
             }
             CloseAddModal();
         }
-        private async void DeleteTeam(int id)
+        private void GoToTeamInfo(int id)
         {
-            if (await JsRuntime.InvokeAsync<bool>("confirm", "Weet je zeker dat je dit team wilt verwijderen?"))
-            {
-                var result = await TeamService.DeleteAsync(id);
-                if (result.IsSuccess)
-                {
-                    GetTeams();
-                }
-                else
-                {
-                    //errors
-                }
-            }
+            NavigationManager.NavigateTo($"/teaminfo/{id}");
         }
     }
 }

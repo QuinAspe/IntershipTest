@@ -1,0 +1,56 @@
+﻿@page "/TeamInfo/{teamId:int}"
+@rendermode InteractiveServer
+@inject IJSRuntime JsRuntime
+@inject ITeamService TeamService
+@inject NavigationManager NavigationManager
+@if (SelectedTeam != null)
+{
+    <h3 class="page-header">@SelectedTeam.Name</h3>
+    <button class="btn btn-warning" @onclick="() => OpenEditModal(SelectedTeam)">Bewerken</button>
+    <button class="btn btn-danger" @onclick="() => DeleteTeam(SelectedTeam.Id)">Verwijderen</button>
+    <h4 class="subheading">Spelers</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Voornaam</th>
+                <th>Achternaam</th>
+                <th>Geboortedatum</th>
+                <th>Acties</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in SelectedTeam.Players)
+            {
+                <tr>
+                    <td>@player.FirstName</td>
+                    <td>@player.LastName</td>
+                    <td>@player.DateOfBirth.ToString("dd-MM-yyyy")</td>
+                    <td>
+                        <button class="btn btn-info" @onclick="() => GoToPlayerInfo(player.Id)">Info</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (IsEditModalOpen)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h2>Bewerk Team</h2>
+            <form @onsubmit="SaveEditTeam">
+                <input type="hidden" @bind="EditingTeam.Id" />
+
+                <label>Voornaam:</label>
+                <input type="text" @bind="EditingTeam.Name" required class="form-control"/><br>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Opslaan</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Annuleren</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+

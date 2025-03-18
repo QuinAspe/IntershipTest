@@ -1,10 +1,11 @@
 ﻿@page "/teams"
 @rendermode InteractiveServer
 @inject IJSRuntime JsRuntime;
+@inject NavigationManager NavigationManager;
 @inject ITeamService TeamService;
-<h3>Teams</h3>
-<button @onclick="() => OpenAddModal()">Team toevoegen</button>
-<table>
+<h3 class="page-header">Teams</h3>
+<button class="btn btn-success" @onclick="() => OpenAddModal()">Team toevoegen</button>
+<table class="table">
     <thead>
         <tr>
             <th>Teamnaam</th>
@@ -17,45 +18,25 @@
             <tr>
                 <td>@team.Name</td>
                 <td>
-                    <button @onclick="() => OpenEditModal(team)">Bewerken</button>
-                    <button @onclick="()=> DeleteTeam(team.Id)">Verwijderen</button>
+                    <button class="btn btn-info" @onclick="() => GoToTeamInfo(team.Id)">Info</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-@if (IsEditModalOpen)
-{
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 20px; border: 1px solid black; width: 300px; text-align: center;">
-            <h2>Bewerk Team</h2>
-            <form @onsubmit="SaveEditTeam">
-                <input type="hidden" @bind="EditingTeam.Id" />
-
-                <label>Voornaam:</label>
-                <input type="text" @bind="EditingTeam.Name" required /><br>
-
-                <div>
-                    <button type="submit">Opslaan</button>
-                    <button type="button" @onclick="CloseEditModal">Annuleren</button>
-                </div>
-            </form>
-        </div>
-    </div>
-}
 @if (IsAddModalOpen)
 {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 20px; border: 1px solid black; width: 300px; text-align: center;">
+    <div class="modal-overlay">
+        <div class="modal-content">
             <h2>Voeg Team toe</h2>
             <form @onsubmit="SaveAddTeam">
 
                 <label>Voornaam:</label>
-                <input type="text" @bind="AddingTeam.Name" required /><br>
+                <input type="text" @bind="AddingTeam.Name" required class="form-control"/><br>
 
-                <div>
-                    <button type="submit">Opslaan</button>
-                    <button type="button" @onclick="CloseAddModal">Annuleren</button>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Opslaan</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Annuleren</button>
                 </div>
             </form>
         </div>

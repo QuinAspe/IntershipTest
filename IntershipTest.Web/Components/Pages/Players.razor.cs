@@ -12,7 +12,6 @@ namespace IntershipTest.Web.Components.Pages
         private List<Team> Teams = new();
         private Player EditingPlayer = new();
         private Player AddingPlayer = new();
-        private bool IsEditModalOpen = false;
         private bool IsAddModalOpen = false;
 
         protected async override Task OnInitializedAsync()
@@ -20,6 +19,10 @@ namespace IntershipTest.Web.Components.Pages
             GetPlayers();
             GetTeams();
             await base.OnInitializedAsync();
+        }
+        private void GoToPlayerInfo(int id)
+        {
+            NavigationManager.NavigateTo($"/playerinfo/{id}");
         }
         private async void GetTeams()
         {
@@ -47,45 +50,15 @@ namespace IntershipTest.Web.Components.Pages
                 StateHasChanged();
             }
         }
-        private void OpenEditModal(Player player)
-        {
-            EditingPlayer = new Player
-            {
-                Id = player.Id,
-                FirstName = player.FirstName,
-                LastName = player.LastName,
-                DateOfBirth = player.DateOfBirth,
-                TeamId = player.TeamId
-            };
-            IsEditModalOpen = true;
-        }
         private void OpenAddModal()
         {
             AddingPlayer = new Player();
             IsAddModalOpen = true;
         }
-        private void CloseEditModal()
-        {
-            IsEditModalOpen = false;
-            StateHasChanged();
-        }
         private void CloseAddModal()
         {
             IsAddModalOpen = false;
             StateHasChanged();
-        }
-        private async void SaveEditPlayer()
-        {
-            var result = await PlayerService.UpdateAsync(EditingPlayer.MapToPlayerUpdateRequestModel());
-            if (result.IsSuccess)
-            {
-                GetPlayers();
-            }
-            else
-            {
-                //errors
-            }
-            CloseEditModal();
         }
         private async void SaveAddPlayer()
         {
@@ -99,21 +72,6 @@ namespace IntershipTest.Web.Components.Pages
                 //errors
             }
             CloseAddModal();
-        }
-        private async void DeletePlayer(int id)
-        {
-            if (await JsRuntime.InvokeAsync<bool>("confirm", "Weet je zeker dat je deze speler wilt verwijderen?"))
-            {
-                var result = await PlayerService.DeleteAsync(id);
-                if (result.IsSuccess)
-                {
-                    GetPlayers();
-                }
-                else
-                {
-                    //errors
-                }
-            }
         }
     }
 }

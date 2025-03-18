@@ -1,0 +1,60 @@
+﻿@page "/PlayerInfo/{playerId:int}"
+@rendermode InteractiveServer
+@inject IJSRuntime JsRuntime
+@inject IPlayerService PlayerService
+@inject ITeamService TeamService
+@inject NavigationManager NavigationManager
+@if (SelectedPlayer != null)
+{
+    <h3 class="page-header">@SelectedPlayer.FirstName @SelectedPlayer.LastName</h3>
+    <button class="btn btn-warning" @onclick="() => OpenEditModal(SelectedPlayer)">Bewerken</button>
+    <button class="btn btn-danger" @onclick="() => DeletePlayer(SelectedPlayer.Id)">Verwijderen</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Geboortedatum</th>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@SelectedPlayer.DateOfBirth</td>
+                <td>@SelectedPlayer.Team.Name <button class="btn btn-info" @onclick="() => GoToTeamInfo(SelectedPlayer.TeamId)">Info</button></td>
+            </tr>
+        </tbody>
+    </table>
+}
+@if (IsEditModalOpen)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h2>Bewerk Speler</h2>
+            <form @onsubmit="SaveEditPlayer">
+                <input type="hidden" @bind="EditingPlayer.Id" />
+
+                <label>Voornaam:</label>
+                <input type="text" @bind="EditingPlayer.FirstName" required class="form-control" /><br>
+
+                <label>Achternaam:</label>
+                <input type="text" @bind="EditingPlayer.LastName" required class="form-control" /><br>
+
+                <label>Geboortedatum:</label>
+                <input type="date" @bind="EditingPlayer.DateOfBirth" required class="form-control" /><br>
+
+                <label>Team:</label>
+                <select @bind="EditingPlayer.TeamId" class="form-control">
+                    <option value="">-- Kies een team --</option>
+                    @foreach (var team in Teams)
+                    {
+                        <option value="@team.Id">@team.Name</option>
+                    }
+                </select><br>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Opslaan</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Annuleren</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
